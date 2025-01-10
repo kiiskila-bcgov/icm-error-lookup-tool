@@ -1,6 +1,18 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { SystemMessage } from "../types";
+import "@carbon/styles/css/styles.css";
+import {
+  Button,
+  DataTable,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+  TextInput,
+} from "@carbon/react";
 
 const useMessages = (errorCode: string) => {
   const [messages, setMessages] = useState<SystemMessage[]>([]);
@@ -36,30 +48,60 @@ const Home = () => {
   const { messages, loading, error, loadMessages } = useMessages(errorCode);
   const router = useRouter();
 
+  const headers = [
+    { key: "error_code", header: "Error Code" },
+    { key: "error_message", header: "Error Message" },
+  ];
+
+  const rows = messages.map((message) => ({
+    id: message.id.toString(),
+    error_code: message.error_code,
+    error_message: message.error_message,
+  }));
+
   return (
-    <div>
+    <div style={{ padding: "2rem" }}>
       <h1>System Messages</h1>
-      <input
-        type="text"
-        placeholder="Filter by error code"
+      <TextInput
+        id="error-code-input"
+        labelText="Filter by error code"
+        placeholder="Enter error code"
         value={errorCode}
         onChange={(e) => setErrorCode(e.target.value)}
+        style={{ marginBottom: "1rem" }}
       />
-      <button onClick={loadMessages}>Load Messages</button>
+      <Button onClick={loadMessages}>Load Messages</Button>
       {loading && <p>Loading...</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       {!loading && !error && (
-        <ol>
-          {messages.map((message) => (
-            <li
-              key={message.id}
-              onClick={() => router.push(`/${message.id}`)}
-              style={{ cursor: "pointer", padding: "5px 0" }}
-            >
-              <strong>{message.error_code}</strong> - {message.error_message}
-            </li>
-          ))}
-        </ol>
+        <DataTable rows={rows} headers={headers}>
+          {({ rows, headers, getHeaderProps, getRowProps }) => (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {headers.map((header) => (
+                    <TableHeader {...getHeaderProps({ header })}>
+                      {header.header}
+                    </TableHeader>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <TableRow
+                    {...getRowProps({ row })}
+                    onClick={() => router.push(`/${row.id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {row.cells.map((cell) => (
+                      <TableCell key={cell.id}>{cell.value}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </DataTable>
       )}
     </div>
   );
