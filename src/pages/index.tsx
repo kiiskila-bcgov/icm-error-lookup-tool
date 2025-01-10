@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableBody,
   TableCell,
-  TextInput,
+  Search,
 } from "@carbon/react";
 
 const useMessages = (errorCode: string) => {
@@ -50,25 +50,27 @@ const Home = () => {
 
   const headers = [
     { key: "error_code", header: "Error Code" },
+    { key: "data_group", header: "Datagroup" },
     { key: "error_message", header: "Error Message" },
   ];
 
   const rows = messages.map((message) => ({
     id: message.id.toString(),
     error_code: message.error_code,
+    data_group: message.data_group,
     error_message: message.error_message,
   }));
 
   return (
     <div style={{ padding: "2rem" }}>
       <h1>System Messages</h1>
-      <TextInput
-        id="error-code-input"
+      <Search
+        id="error-code-search"
         labelText="Filter by error code"
         placeholder="Enter error code"
         value={errorCode}
         onChange={(e) => setErrorCode(e.target.value)}
-        style={{ marginBottom: "1rem" }}
+        style={{ marginBottom: "1rem", width: "50%" }}
       />
       <Button onClick={loadMessages}>Load Messages</Button>
       {loading && <p>Loading...</p>}

@@ -1,6 +1,7 @@
 export interface SystemMessage {
   id: number;
   error_code: string;
+  data_group: string;
   error_message: string;
   icm_error_solution: string;
   explanation: string;
