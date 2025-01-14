@@ -49,6 +49,15 @@ const MessageDetail = () => {
     router.push("/");
   };
 
+  const renderWithLineBreaks = (text: string) => {
+    return text.split("\n").map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        {index < text.split("\n").length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <Layout>
       {loading && (
@@ -102,13 +111,16 @@ const MessageDetail = () => {
               <Box fontWeight="bold">What caused this?</Box>
             </Typography>
             <Typography variant="h6" marginBottom={"2rem"} fontStyle={"bold"}>
-              {message.explanation || "No explanation documented yet."}
+              {renderWithLineBreaks(message.explanation) ||
+                "No explanation documented yet."}
             </Typography>
             <Typography variant="h5">
               <Box fontWeight="bold">How to resolve the error</Box>
             </Typography>
             <Typography variant="h6">
-              {message.fix || "No fix documented yet."}
+              {message.fix
+                ? renderWithLineBreaks(message.fix)
+                : "No fix documented yet."}
             </Typography>
           </Paper>
         </>
