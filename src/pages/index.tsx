@@ -208,15 +208,17 @@ const Home = () => {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell
-                      style={{
-                        color: "#3256c0",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => router.push(`/${row.id}`)}
-                    >
-                      {row.error_code}
+                    <TableCell>
+                      <span
+                        style={{
+                          color: "#3256c0",
+                          textDecoration: "underline",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => router.push(`/${row.id}`)}
+                      >
+                        {row.error_code}
+                      </span>
                     </TableCell>
                     <TableCell>{row.data_group}</TableCell>
                     <TableCell>{row.message}</TableCell>
