@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { SystemMessage } from "../types";
+import { SystemMessage } from "../../types";
 import {
   CircularProgress,
   Alert,

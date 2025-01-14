@@ -164,7 +164,7 @@ const Home = () => {
                   borderColor: "#3256c0",
                   borderWidth: 2,
                 }}
-                onClick={() => router.push(`/${index + 1}`)}
+                onClick={() => router.push(`/messages/${index + 1}`)}
                 variant="outlined"
               />
             </Grid>
@@ -215,7 +215,7 @@ const Home = () => {
                           textDecoration: "underline",
                           cursor: "pointer",
                         }}
-                        onClick={() => router.push(`/${row.id}`)}
+                        onClick={() => router.push(`/messages/${row.id}`)}
                       >
                         {row.error_code}
                       </span>
