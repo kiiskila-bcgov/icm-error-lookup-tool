@@ -110,18 +110,26 @@ const MessageDetail = () => {
             <Typography variant="h5">
               <Box fontWeight="bold">What caused this?</Box>
             </Typography>
-            <Typography variant="h6" marginBottom={"2rem"} fontStyle={"bold"}>
-              {renderWithLineBreaks(message.explanation) ||
-                "No explanation documented yet."}
-            </Typography>
+            {message.explanation ? (
+              <Typography variant="h6">
+                {renderWithLineBreaks(message.explanation)}
+              </Typography>
+            ) : (
+              <Typography variant="h6">
+                No explanation documented yet.
+              </Typography>
+            )}
+
             <Typography variant="h5">
               <Box fontWeight="bold">How to resolve the error</Box>
             </Typography>
-            <Typography variant="h6">
-              {message.fix
-                ? renderWithLineBreaks(message.fix)
-                : "No fix documented yet."}
-            </Typography>
+            {message.fix ? (
+              <Typography variant="h6">
+                {renderWithLineBreaks(message.fix)}
+              </Typography>
+            ) : (
+              <Typography variant="h6">No fix documented yet.</Typography>
+            )}
           </Paper>
         </>
       )}
