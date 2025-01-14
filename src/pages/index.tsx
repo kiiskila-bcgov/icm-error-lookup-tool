@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { SystemMessage } from "../types";
-import "@carbon/styles/css/styles.css";
 import {
   Button,
-  DataTable,
+  TextField,
   Table,
-  TableHead,
-  TableRow,
-  TableHeader,
   TableBody,
   TableCell,
-  Search,
-} from "@carbon/react";
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 
 const useMessages = (errorCode: string) => {
   const [messages, setMessages] = useState<SystemMessage[]>([]);
@@ -48,62 +49,60 @@ const Home = () => {
   const { messages, loading, error, loadMessages } = useMessages(errorCode);
   const router = useRouter();
 
-  const headers = [
-    { key: "error_code", header: "Error Code" },
-    { key: "data_group", header: "Datagroup" },
-    { key: "error_message", header: "Error Message" },
-  ];
-
-  const rows = messages.map((message) => ({
-    id: message.id.toString(),
-    error_code: message.error_code,
-    data_group: message.data_group,
-    error_message: message.error_message,
-  }));
+  const headers = ["Error Code", "Datagroup", "Error Message"];
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h1>System Messages</h1>
-      <Search
+      <Typography variant="h4" gutterBottom>
+        System Messages
+      </Typography>
+      <TextField
         id="error-code-search"
-        labelText="Filter by error code"
+        label="Filter by error code"
         placeholder="Enter error code"
         value={errorCode}
         onChange={(e) => setErrorCode(e.target.value)}
         style={{ marginBottom: "1rem", width: "50%" }}
+        variant="outlined"
       />
-      <Button onClick={loadMessages}>Load Messages</Button>
-      {loading && <p>Loading...</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {!loading && !error && (
-        <DataTable rows={rows} headers={headers}>
-          {({ rows, headers, getHeaderProps, getRowProps }) => (
-            <Table>
-              <TableHead>
-                <TableRow>
-                  {headers.map((header) => (
-                    <TableHeader {...getHeaderProps({ header })}>
-                      {header.header}
-                    </TableHeader>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {rows.map((row) => (
-                  <TableRow
-                    {...getRowProps({ row })}
-                    onClick={() => router.push(`/${row.id}`)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {row.cells.map((cell) => (
-                      <TableCell key={cell.id}>{cell.value}</TableCell>
-                    ))}
-                  </TableRow>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={loadMessages}
+        style={{ marginBottom: "1rem" }}
+      >
+        Load Messages
+      </Button>
+      {loading && <CircularProgress />}
+      {error && <Typography color="error">{error}</Typography>}
+      {!loading && !error && messages.length > 0 && (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                {headers.map((header) => (
+                  <TableCell key={header}>{header}</TableCell>
                 ))}
-              </TableBody>
-            </Table>
-          )}
-        </DataTable>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {messages.map((message) => (
+                <TableRow
+                  key={message.id}
+                  onClick={() => router.push(`/${message.id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <TableCell>{message.error_code}</TableCell>
+                  <TableCell>{message.data_group}</TableCell>
+                  <TableCell>{message.error_message}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+      {!loading && !error && messages.length === 0 && (
+        <Typography>No messages found.</Typography>
       )}
     </div>
   );

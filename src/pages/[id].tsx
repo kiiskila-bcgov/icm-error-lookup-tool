@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { SystemMessage } from "../types";
-import "@carbon/styles/css/styles.css";
-import { Loading, InlineNotification, Grid, Row, Column } from "@carbon/react";
+import {
+  CircularProgress,
+  Alert,
+  Container,
+  Typography,
+  Grid,
+  Paper,
+} from "@mui/material";
 
 const MessageDetail = () => {
   const {
@@ -36,36 +42,37 @@ const MessageDetail = () => {
   }, [id]);
 
   return (
-    <Grid style={{ padding: "2rem" }}>
-      <Row>
-        <Column>
-          <h1>System Message Detail</h1>
-          {loading && (
-            <Loading description="Loading message..." withOverlay={false} />
-          )}
-          {error && (
-            <InlineNotification
-              kind="error"
-              title="Error"
-              subtitle={error}
-              lowContrast
-              style={{ marginBottom: "1rem" }}
-            />
-          )}
-          {!loading && !error && message && (
-            <div>
-              {Object.entries(message).map(([key, value]) => (
-                <p key={key}>
-                  <strong>{key.replace(/_/g, " ").toUpperCase()}:</strong>{" "}
-                  {value}
-                </p>
-              ))}
-            </div>
-          )}
-          {!loading && !error && !message && <p>No message found.</p>}
-        </Column>
-      </Row>
-    </Grid>
+    <Container style={{ padding: "2rem" }}>
+      <Typography variant="h4" gutterBottom>
+        System Message Detail
+      </Typography>
+      {loading && (
+        <Grid
+          container
+          justifyContent="center"
+          style={{ marginBottom: "1rem" }}
+        >
+          <CircularProgress />
+        </Grid>
+      )}
+      {error && (
+        <Alert severity="error" style={{ marginBottom: "1rem" }}>
+          {error}
+        </Alert>
+      )}
+      {!loading && !error && message && (
+        <Paper elevation={3} style={{ padding: "1rem" }}>
+          {Object.entries(message).map(([key, value]) => (
+            <Typography key={key} variant="body1" gutterBottom>
+              <strong>{key.replace(/_/g, " ").toUpperCase()}:</strong> {value}
+            </Typography>
+          ))}
+        </Paper>
+      )}
+      {!loading && !error && !message && (
+        <Typography>No message found.</Typography>
+      )}
+    </Container>
   );
 };
 
