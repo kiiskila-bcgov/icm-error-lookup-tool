@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios, { AxiosError } from "axios";
+import { format } from "date-fns";
 import {
   Container,
   TextField,
@@ -46,7 +47,24 @@ const Home = () => {
   const [searchResults, setSearchResults] = useState<ErrorRow[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [lastUpdated, setLastUpdated] = useState<string>("");
   const rows = searchResults;
+
+  const fetchLastUpdated = async () => {
+    try {
+      const response = await axios.get("/api/last-updated");
+
+      if (response.data && response.data.last_updated) {
+        const lastUpdatedDate = new Date(response.data.last_updated);
+        const formattedDate = format(lastUpdatedDate, "MMMM dd'th', yyyy");
+        setLastUpdated(formattedDate);
+      } else {
+        setLastUpdated("No last updated data available");
+      }
+    } catch (err) {
+      setLastUpdated("Unable to fetch last updated date");
+    }
+  };
 
   const handleSearch = async () => {
     if (!errorCode.trim()) {
@@ -64,7 +82,6 @@ const Home = () => {
       setSearchResults(messages);
       setPage(0);
     } catch (err) {
-      console.error("Search error:", err);
       const error = err as AxiosError;
       setError(error.message || "An error occurred while searching");
       setSearchResults([]);
@@ -87,7 +104,6 @@ const Home = () => {
       const response = await axios.get<ApiResponse>("/api/messages");
       setSearchResults(response.data.data);
     } catch (err) {
-      console.error("Error fetching messages:", err);
       const error = err as AxiosError;
       setError(error.message || "An error occurred while fetching messages");
       setSearchResults([]);
@@ -98,6 +114,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchAllMessages();
+    fetchLastUpdated();
   }, []);
 
   return (
@@ -273,7 +290,7 @@ const Home = () => {
           }}
         />
         <Typography style={{ marginBottom: "1rem" }}>
-          Last Updated on December 13th, 2024
+          {lastUpdated ? `Last updated on ${lastUpdated}` : "Loading..."}
         </Typography>
 
         <Typography
