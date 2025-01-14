@@ -42,8 +42,8 @@ const Home = () => {
   const [notesOpen, setNotesOpen] = useState(false);
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const [errorCode, setErrorCode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [, setLoading] = useState(false);
+  const [, setError] = useState("");
   const [searchResults, setSearchResults] = useState<ErrorRow[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -62,6 +62,7 @@ const Home = () => {
         setLastUpdated("No last updated data available");
       }
     } catch (err) {
+      console.log(err);
       setLastUpdated("Unable to fetch last updated date");
     }
   };
