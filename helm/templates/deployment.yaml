@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: error-lookup-tool
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.tag }}"
           env:
             - name: PORT
               value: "8080"
