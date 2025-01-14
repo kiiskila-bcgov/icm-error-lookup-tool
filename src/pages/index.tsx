@@ -123,8 +123,9 @@ const Home = () => {
       <Card
         style={{
           backgroundColor: "#e2f1fb",
-          margin: "1rem",
+          margin: "15px 20px",
         }}
+        elevation={0}
       >
         <Box style={{ height: "4px", backgroundColor: "#ffb035" }} />
         <CardContent style={{ padding: "2rem" }}>

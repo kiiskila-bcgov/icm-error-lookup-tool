@@ -4,13 +4,17 @@ import { SystemMessage } from "../../types";
 import {
   CircularProgress,
   Alert,
-  Container,
   Typography,
   Grid,
   Paper,
+  Button,
+  Box,
 } from "@mui/material";
+import { ArrowBack } from "@mui/icons-material";
+import Layout from "../../components/Layout";
 
 const MessageDetail = () => {
+  const router = useRouter();
   const {
     query: { id },
   } = useRouter();
@@ -41,11 +45,12 @@ const MessageDetail = () => {
     if (id) loadMessage(id);
   }, [id]);
 
+  const handleBackClick = () => {
+    router.push("/");
+  };
+
   return (
-    <Container style={{ padding: "2rem" }}>
-      <Typography variant="h4" gutterBottom>
-        System Message Detail
-      </Typography>
+    <Layout>
       {loading && (
         <Grid
           container
@@ -61,18 +66,57 @@ const MessageDetail = () => {
         </Alert>
       )}
       {!loading && !error && message && (
-        <Paper elevation={3} style={{ padding: "1rem" }}>
-          {Object.entries(message).map(([key, value]) => (
-            <Typography key={key} variant="body1" gutterBottom>
-              <strong>{key.replace(/_/g, " ").toUpperCase()}:</strong> {value}
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<ArrowBack />}
+            onClick={handleBackClick}
+            style={{
+              backgroundColor: "#18356a",
+              color: "white",
+              marginBottom: "1rem",
+            }}
+          >
+            Back to Search
+          </Button>
+          <Paper elevation={3} style={{ padding: "1rem" }}>
+            <Typography variant="h6" color="grey">
+              Error Code
             </Typography>
-          ))}
-        </Paper>
+            <Typography variant="h3" gutterBottom>
+              {message.error_code}
+            </Typography>
+            <Paper
+              style={{ backgroundColor: "#f4f4f4", marginBottom: "2rem" }}
+              elevation={0}
+            >
+              <Typography variant="h4" paddingX={"1rem"} paddingTop={"1rem"}>
+                Message
+              </Typography>
+              <Typography variant="h5" padding={"1rem"}>
+                {message.error_message}
+              </Typography>
+            </Paper>
+            <Typography variant="h5">
+              <Box fontWeight="bold">What caused this?</Box>
+            </Typography>
+            <Typography variant="h6" marginBottom={"2rem"} fontStyle={"bold"}>
+              {message.explanation || "No explanation documented yet."}
+            </Typography>
+            <Typography variant="h5">
+              <Box fontWeight="bold">How to resolve the error</Box>
+            </Typography>
+            <Typography variant="h6">
+              {message.fix || "No fix documented yet."}
+            </Typography>
+          </Paper>
+        </>
       )}
       {!loading && !error && !message && (
         <Typography>No message found.</Typography>
       )}
-    </Container>
+    </Layout>
   );
 };
 
