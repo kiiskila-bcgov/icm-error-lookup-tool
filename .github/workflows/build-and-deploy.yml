@@ -73,7 +73,9 @@ jobs:
           helm upgrade --install error-lookup-tool ./helm \
             --namespace ${{ secrets.OPENSHIFT_TEST_NAMESPACE }} \
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
-            --set image.tag=${{ needs.build_and_push.outputs.image_tag }}
+            --set image.tag=${{ needs.build_and_push.outputs.image_tag }} \
+            --set env.apiKey='${{ secrets.API_KEY }}' \
+            --set env.apiUrl='${{ secrets.API_URL }}'
 
       - name: Trigger OpenShift Rollout
         run: |
