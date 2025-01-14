@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Pagination,
+  TablePagination,
   Collapse,
   IconButton,
   Box,
@@ -67,6 +67,9 @@ const Home = () => {
       message: "Sample error message 6",
     },
   ]);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleSearch = () => {
     if (errorCode.trim()) {
@@ -176,56 +179,56 @@ const Home = () => {
             <TableHead>
               <TableRow>
                 <TableCell
-                  style={{
-                    fontWeight: "bold",
-                    backgroundColor: "#efefef",
-                  }}
+                  style={{ fontWeight: "bold", backgroundColor: "#efefef" }}
                 >
                   Error Code
                 </TableCell>
                 <TableCell
-                  style={{
-                    fontWeight: "bold",
-                    backgroundColor: "#efefef",
-                  }}
+                  style={{ fontWeight: "bold", backgroundColor: "#efefef" }}
                 >
                   Datagroup
                 </TableCell>
                 <TableCell
-                  style={{
-                    fontWeight: "bold",
-                    backgroundColor: "#efefef",
-                  }}
+                  style={{ fontWeight: "bold", backgroundColor: "#efefef" }}
                 >
                   Message
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell
-                    style={{
-                      color: "#3256c0",
-                      textDecoration: "underline",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => router.push(`/${row.id}`)}
-                  >
-                    {row.error_code}
-                  </TableCell>
-                  <TableCell>{row.data_group}</TableCell>
-                  <TableCell>{row.message}</TableCell>
-                </TableRow>
-              ))}
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell
+                      style={{
+                        color: "#3256c0",
+                        textDecoration: "underline",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => router.push(`/${row.id}`)}
+                    >
+                      {row.error_code}
+                    </TableCell>
+                    <TableCell>{row.data_group}</TableCell>
+                    <TableCell>{row.message}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
 
-        <Pagination
-          count={1}
-          color="primary"
-          style={{ marginBottom: "1rem" }}
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={(event, newPage) => setPage(newPage)}
+          onRowsPerPageChange={(event) => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
         />
         <Typography style={{ marginBottom: "1rem" }}>
           Last Updated on December 13th, 2024
