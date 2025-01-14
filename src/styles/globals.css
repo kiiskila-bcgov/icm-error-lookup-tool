@@ -1,0 +1,11 @@
+html, body, #__next {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #fafafa;
+  font-family: 'BC Sans', 'Noto Sans', 'Verdana', 'Arial', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
