@@ -1,0 +1,4 @@
+apiVersion: v2
+name: error-lookup-tool
+description: A Helm chart for deploying the ICM Error Lookup Tool
+version: 0.1.0

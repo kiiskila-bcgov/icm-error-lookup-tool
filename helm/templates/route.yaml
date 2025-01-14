@@ -1,0 +1,15 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: error-lookup-tool
+  labels:
+    app.kubernetes.io/name: error-lookup-tool
+spec:
+  host: icm-error-lookup-tool.apps.silver.devops.gov.bc.ca
+  to:
+    kind: Service
+    name: error-lookup-tool
+  port:
+    targetPort: 8080
+  tls:
+    termination: edge
