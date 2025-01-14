@@ -174,7 +174,15 @@ const Home = () => {
         <Typography variant="h5" gutterBottom>
           All Error messages
         </Typography>
-        <TableContainer component={Paper} style={{ marginBottom: "1rem" }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            width: {
+              xs: "100%",
+              sm: "80%",
+            },
+          }}
+        >
           <Table>
             <TableHead>
               <TableRow>
@@ -219,6 +227,14 @@ const Home = () => {
         </TableContainer>
 
         <TablePagination
+          sx={{
+            marginBottom: "1rem",
+            width: {
+              xs: "100%",
+              sm: "80%",
+            },
+            backgroundColor: "#efefef",
+          }}
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={rows.length}
