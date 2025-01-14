@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import axios, { AxiosError } from "axios";
 import {
   Container,
   TextField,
@@ -23,59 +24,81 @@ import {
 } from "@mui/material";
 import { ExpandMore, Search as SearchIcon } from "@mui/icons-material";
 
+interface ErrorRow {
+  id: number;
+  error_code: string;
+  data_group: string;
+  error_message: string;
+}
+
+interface ApiResponse {
+  data: ErrorRow[];
+}
+
 const Home = () => {
   const router = useRouter();
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
   const [errorCode, setErrorCode] = useState("");
-  const [rows] = useState([
-    {
-      id: 1,
-      error_code: "ERR001",
-      data_group: "Group A",
-      message: "Sample error message 1",
-    },
-    {
-      id: 2,
-      error_code: "ERR002",
-      data_group: "Group B",
-      message: "Sample error message 2",
-    },
-    {
-      id: 3,
-      error_code: "ERR003",
-      data_group: "Group C",
-      message: "Sample error message 3",
-    },
-    {
-      id: 4,
-      error_code: "ERR004",
-      data_group: "Group D",
-      message: "Sample error message 4",
-    },
-    {
-      id: 5,
-      error_code: "ERR005",
-      data_group: "Group E",
-      message: "Sample error message 5",
-    },
-    {
-      id: 6,
-      error_code: "ERR006",
-      data_group: "Group E",
-      message: "Sample error message 6",
-    },
-  ]);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [searchResults, setSearchResults] = useState<ErrorRow[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const rows = searchResults;
 
-  const handleSearch = () => {
-    if (errorCode.trim()) {
-      console.log("Searching for error code:", errorCode);
+  const handleSearch = async () => {
+    if (!errorCode.trim()) {
+      return fetchAllMessages();
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.get<ApiResponse>(
+        `/api/messages?errorCode=${errorCode}`
+      );
+      const messages = response.data.data;
+      setSearchResults(messages);
+      setPage(0);
+    } catch (err) {
+      console.error("Search error:", err);
+      const error = err as AxiosError;
+      setError(error.message || "An error occurred while searching");
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handleKeyPress = (event: { key: string }) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const fetchAllMessages = async () => {
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.get<ApiResponse>("/api/messages");
+      setSearchResults(response.data.data);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+      const error = err as AxiosError;
+      setError(error.message || "An error occurred while fetching messages");
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAllMessages();
+  }, []);
 
   return (
     <Container style={{ maxWidth: "100%", padding: 0 }}>
@@ -98,6 +121,7 @@ const Home = () => {
                 value={errorCode}
                 onChange={(e) => setErrorCode(e.target.value)}
                 variant="outlined"
+                onKeyPress={handleKeyPress}
                 style={{ backgroundColor: "#fafafa" }}
                 InputProps={{
                   endAdornment: (
@@ -221,7 +245,7 @@ const Home = () => {
                       </span>
                     </TableCell>
                     <TableCell>{row.data_group}</TableCell>
-                    <TableCell>{row.message}</TableCell>
+                    <TableCell>{row.error_message}</TableCell>
                   </TableRow>
                 ))}
             </TableBody>
