@@ -1,7 +1,18 @@
-import { Paper, Typography, Stack } from "@mui/material";
+import { Paper, Typography, Stack, Button, Snackbar } from "@mui/material";
+import React, { useState } from "react";
 import Layout from "../components/Layout";
 
 const General = () => {
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const handleFeedbackClick = () => {
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const handleFrontlineToolsClick = () => {
     window.open("https://www2.gov.bc.ca", "_blank");
   };
@@ -79,8 +90,34 @@ const General = () => {
           <Typography variant="h6" gutterBottom>
             Donec finibus odio enim, non mollis nisi ullamcorper eu.
           </Typography>
+          <Paper variant="outlined" style={{ padding: "0.5rem" }}>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Typography variant="body1">
+                Did this page solve your problem?
+              </Typography>
+              <Stack direction="row" spacing={1}>
+                <Button variant="outlined" onClick={handleFeedbackClick}>
+                  Yes
+                </Button>
+                <Button variant="outlined" onClick={handleFeedbackClick}>
+                  No
+                </Button>
+              </Stack>
+            </Stack>
+          </Paper>
         </Stack>
       </Paper>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message="Thank you for your feedback!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Layout>
   );
 };
