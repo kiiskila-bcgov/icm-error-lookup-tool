@@ -10,6 +10,8 @@ import {
   Button,
   Box,
   Collapse,
+  Stack,
+  Snackbar,
 } from "@mui/material";
 import { ArrowBack, ExpandMore } from "@mui/icons-material";
 import Layout from "../../components/Layout";
@@ -23,6 +25,15 @@ const MessageDetail = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [metaDataOpen, setMetaDataOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const handleFeedbackClick = () => {
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   const loadMessage = async (id: string | string[] | undefined) => {
     if (!id) return;
@@ -137,6 +148,28 @@ const MessageDetail = () => {
                 No fix documented yet.
               </Typography>
             )}
+            <Paper
+              variant="outlined"
+              style={{ padding: "0.5rem", marginTop: "1rem" }}
+            >
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography variant="body1">
+                  Did this page solve your problem?
+                </Typography>
+                <Stack direction="row" spacing={1}>
+                  <Button variant="outlined" onClick={handleFeedbackClick}>
+                    Yes
+                  </Button>
+                  <Button variant="outlined" onClick={handleFeedbackClick}>
+                    No
+                  </Button>
+                </Stack>
+              </Stack>
+            </Paper>
             <Typography
               style={{ cursor: "pointer", color: "grey", marginTop: "1rem" }}
               onClick={() => setMetaDataOpen(!metaDataOpen)}
@@ -156,6 +189,13 @@ const MessageDetail = () => {
       {!loading && !error && !message && (
         <Typography>No message found.</Typography>
       )}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message="Thank you for your feedback!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
     </Layout>
   );
 };
