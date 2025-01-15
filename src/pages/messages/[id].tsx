@@ -9,8 +9,9 @@ import {
   Paper,
   Button,
   Box,
+  Collapse,
 } from "@mui/material";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, ExpandMore } from "@mui/icons-material";
 import Layout from "../../components/Layout";
 
 const MessageDetail = () => {
@@ -21,6 +22,7 @@ const MessageDetail = () => {
   const [message, setMessage] = useState<SystemMessage | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [metaDataOpen, setMetaDataOpen] = useState(false);
 
   const loadMessage = async (id: string | string[] | undefined) => {
     if (!id) return;
@@ -89,7 +91,10 @@ const MessageDetail = () => {
           >
             Back to Search
           </Button>
-          <Paper elevation={3} style={{ padding: "1rem" }}>
+          <Paper
+            elevation={3}
+            style={{ padding: "1rem", marginBottom: "2rem" }}
+          >
             <Typography variant="h6" color="grey">
               Error Code
             </Typography>
@@ -111,25 +116,40 @@ const MessageDetail = () => {
               <Box fontWeight="bold">What caused this?</Box>
             </Typography>
             {message.explanation ? (
-              <Typography variant="h6">
+              <Typography variant="h6" marginLeft={"1rem"}>
                 {renderWithLineBreaks(message.explanation)}
               </Typography>
             ) : (
-              <Typography variant="h6">
+              <Typography variant="h6" marginLeft={"1rem"}>
                 No explanation documented yet.
               </Typography>
             )}
 
-            <Typography variant="h5">
+            <Typography variant="h5" marginTop={"1rem"}>
               <Box fontWeight="bold">How to resolve the error</Box>
             </Typography>
             {message.fix ? (
-              <Typography variant="h6">
+              <Typography variant="h6" marginLeft={"1rem"}>
                 {renderWithLineBreaks(message.fix)}
               </Typography>
             ) : (
-              <Typography variant="h6">No fix documented yet.</Typography>
+              <Typography variant="h6" marginLeft={"1rem"}>
+                No fix documented yet.
+              </Typography>
             )}
+            <Typography
+              style={{ cursor: "pointer", color: "grey", marginTop: "1rem" }}
+              onClick={() => setMetaDataOpen(!metaDataOpen)}
+            >
+              Meta Data
+              <ExpandMore />
+            </Typography>
+            <Collapse in={metaDataOpen}>
+              <Typography style={{ marginTop: "1rem" }}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed id
+                dui vel dolor placerat aliquam.
+              </Typography>
+            </Collapse>
           </Paper>
         </>
       )}

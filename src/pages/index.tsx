@@ -182,6 +182,7 @@ const Home = () => {
         elevation={0}
         style={{
           margin: "3rem",
+          paddingBottom: "1rem",
           backgroundColor: "#fafafa",
         }}
       >
