@@ -23,13 +23,20 @@ const fetchAllMessages = async (errorCode?: string) => {
 };
 
 const fetchSpecificMessage = async (id: string) => {
-  const url = `${API_URL}/${id}`;
-  const { data } = await axios.get(url, {
-    headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
-    },
-  });
-  return data;
+  try {
+    const url = `${API_URL}/${id}`;
+    const { data } = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+      },
+    });
+    return data;
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      throw { status: 404, message: "Message not found" };
+    }
+    throw error;
+  }
 };
 
 export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -46,9 +53,13 @@ export const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       const data = await fetchAllMessages();
       res.status(200).json(data);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching data:", error);
-    res.status(500).json({ error: "Error fetching data" });
+    if (error.status === 404) {
+      res.status(404).json({ error: "Message not found" });
+    } else {
+      res.status(500).json({ error: "Error fetching data" });
+    }
   }
 };
 

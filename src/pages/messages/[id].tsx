@@ -42,7 +42,14 @@ const MessageDetail = () => {
     setError(null);
     try {
       const response = await fetch(`/api/messages?id=${id}`);
+
+      if (response.status === 404) {
+        setError("Message not found.");
+        return;
+      }
+
       if (!response.ok) throw new Error("Failed to fetch message details.");
+
       const { data } = await response.json();
       setMessage(data);
     } catch (error) {
@@ -84,9 +91,24 @@ const MessageDetail = () => {
       )}
       {error && (
         <Alert severity="error" style={{ marginBottom: "1rem" }}>
-          {error}
+          {error}{" "}
+          {error === "Message not found." && (
+            <Typography variant="h5" style={{ marginTop: "1rem" }}>
+              <span
+                style={{
+                  color: "#3256c0",
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                }}
+                onClick={() => router.push("/request-documentation")}
+              >
+                Request documentation
+              </span>
+            </Typography>
+          )}
         </Alert>
       )}
+
       {!loading && !error && message && (
         <>
           <Button
