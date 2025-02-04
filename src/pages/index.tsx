@@ -67,6 +67,12 @@ const Home = () => {
     }
   };
 
+  const getRandomExistingPage = (rows: ErrorRow[]) => {
+    if (rows.length === 0) return "/messages/1";
+    const randomIndex = Math.floor(Math.random() * rows.length);
+    return `/messages/${rows[randomIndex].id}`;
+  };
+
   const handleSearch = async () => {
     if (!errorCode.trim()) {
       return fetchAllMessages();
@@ -208,7 +214,7 @@ const Home = () => {
                   borderColor: "#3256c0",
                   borderWidth: 2,
                 }}
-                onClick={() => router.push(`/messages/${index + 1}`)}
+                onClick={() => router.push(getRandomExistingPage(rows))}
                 variant="outlined"
               />
             </Grid>
