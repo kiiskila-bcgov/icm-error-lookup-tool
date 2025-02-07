@@ -2,18 +2,17 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_KEY = process.env.API_KEY;
 
-if (!API_URL) {
-  throw new Error(
-    "NEXT_PUBLIC_API_URL is not defined in the environment variables"
-  );
+if (!API_URL || !API_KEY) {
+  throw new Error("API is not defined in the environment variables");
 }
 
 const fetchLastUpdated = async () => {
   const url = `${API_URL}/last-updated`;
   const { data } = await axios.get(url, {
     headers: {
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_API_KEY}`,
+      Authorization: `Bearer ${API_KEY}`,
     },
   });
   return data;
